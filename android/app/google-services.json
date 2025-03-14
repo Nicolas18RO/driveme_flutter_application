@@ -1,0 +1,90 @@
+{
+  "project_info": {
+    "project_number": "318226051372",
+    "project_id": "proyectdriveme",
+    "storage_bucket": "proyectdriveme.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318226051372:android:cb882f5abc7ce44c4c3c89",
+        "android_client_info": {
+          "package_name": "com.example.drive_me_application_v02"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "318226051372-gttml6ftuqfqhghsnttirgjdbcnccepc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6LctaWMhKPQ4YO-Qx_tdY067w20MkQXU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "318226051372-gttml6ftuqfqhghsnttirgjdbcnccepc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "318226051372-k1g7v7ro3qalufeln5o287cbljju1e6v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.pruebaDriveme"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318226051372:android:7be146b278e32cfe4c3c89",
+        "android_client_info": {
+          "package_name": "com.example.prueba_driveme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "318226051372-kimjcfcrbbsdeinst4srgo27e2gj7dv3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.prueba_driveme",
+            "certificate_hash": "8d8802d1d9840eac666ef769ed700d3631f611b3"
+          }
+        },
+        {
+          "client_id": "318226051372-gttml6ftuqfqhghsnttirgjdbcnccepc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6LctaWMhKPQ4YO-Qx_tdY067w20MkQXU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "318226051372-gttml6ftuqfqhghsnttirgjdbcnccepc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "318226051372-k1g7v7ro3qalufeln5o287cbljju1e6v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.pruebaDriveme"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
