@@ -1,9 +1,10 @@
-import 'dart:ui';
-import 'package:drive_me_application_v02/Componets/ImageLoginOption.dart';
+import 'package:drive_me_application_v02/Componets/error_message.dart';
+import 'package:drive_me_application_v02/Componets/imageLoginOption.dart';
 import 'package:drive_me_application_v02/Componets/MyButton.dart';
 import 'package:drive_me_application_v02/Componets/MyTextField.dart';
-import 'package:drive_me_application_v02/Componets/Text_Continua_Con.dart';
+import 'package:drive_me_application_v02/Componets/myTextField_Password.dart';
 import 'package:drive_me_application_v02/Services/auth_service.dart';
+import 'package:drive_me_application_v02/Style/background_style.dart';
 import 'package:drive_me_application_v02/View/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -20,24 +21,8 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void mostrarMensajeError(String mensaje) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: Colors.deepPurple,
-            title: Center(
-              child: Text(
-                mensaje,
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
-          );
-        });
-  }
-
   // Método para iniciar sesión
-  void iniciarSesion() async {
+  Future<void> iniciarSesion() async {
     // Mostrar un círculo de carga mientras se inicia la sesión
     showDialog(
         context: context,
@@ -47,40 +32,99 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         });
 
-    // Intento de inicio de sesión
     try {
       if (emailController.text.isEmpty || passwordController.text.isEmpty) {
         Navigator.pop(context);
-        mostrarMensajeError("Por favor, Ingresa el correo y la contraseña");
+        mostrarMensajeError(
+            context, "Por favor, ingresa el correo y la contraseña");
         return;
       }
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
 
-      // Finalización del círculo de carga
-      Navigator.pop(context);
+      UserCredential userCredential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(
+              email: emailController.text.trim(),
+              password: passwordController.text.trim());
 
-      // Redireccionar a HomePage
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+      // Obtener el usuario actual
+      User? user = userCredential.user;
+
+      if (user != null) {
+        // Recargar usuario para asegurarse de que emailVerified esté actualizado
+        await user.reload();
+        user = FirebaseAuth.instance.currentUser;
+
+        if (!user!.emailVerified) {
+          // Si el email no está verificado, mostrar mensaje y opción para reenviar
+          Navigator.pop(context); // Cerrar el círculo de carga
+          await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                backgroundColor: Colors.deepPurple,
+                title: const Text(
+                  'Correo no verificado',
+                  style: TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+                content: Text(
+                  'Debes verificar tu correo electrónico antes de iniciar sesión.\n\n¿Quieres que te enviemos un nuevo correo de verificación?',
+                  style: const TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context); // Cerrar el diálogo
+                    },
+                    child: const Text(
+                      'Cancelar',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      await user?.sendEmailVerification();
+                      Navigator.pop(context); // Cerrar el diálogo
+                      mostrarMensajeError(context,
+                          'Se ha enviado un nuevo correo de verificación a: ${user?.email}');
+                    },
+                    child: const Text(
+                      'Reenviar',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+          return;
+        }
+
+        // Finalización del círculo de carga
+        Navigator.pop(context);
+
+        // Redireccionar a HomePage si el correo está verificado
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()));
+      }
     } on FirebaseAuthException catch (e) {
       // Finalización del círculo de carga
       Navigator.pop(context);
 
-      //Mensajes de Error
+      // Mensajes de error
       switch (e.code) {
         case 'invalid-email':
-          mostrarMensajeError('Correo electrónico inválido');
+          mostrarMensajeError(context, 'E-mail inválido');
           break;
         case 'user-not-found':
           mostrarMensajeError(
-              'No se encontró un usuario con ese correo electrónico');
+              context, 'No se encontró un usuario con ese correo electrónico');
           break;
         case 'wrong-password':
-          mostrarMensajeError('Contraseña incorrecta');
+          mostrarMensajeError(context, 'Contraseña incorrecta');
           break;
         default:
-          mostrarMensajeError('Error desconocido: ${e.code}');
+          mostrarMensajeError(context, 'Error desconocido: ${e.code}');
       }
     }
   }
@@ -131,10 +175,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           hintText: 'e-mail'),
 
                       //TextFiel Passsword
-                      MyTextField(
-                          controller: passwordController,
-                          obscureText: true,
-                          hintText: 'Password'),
+                      MyTextFielPassword(
+                          controller: passwordController, hintText: 'Password'),
 
                       //Button Login
                       const SizedBox(height: 10),
@@ -184,89 +226,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ],
     ));
-  }
-}
-
-class Logo extends StatelessWidget {
-  const Logo({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return const SafeArea(
-      child: CircleAvatar(
-        minRadius: 70,
-        backgroundImage: AssetImage(
-          'lib/Images/LogoDM.png',
-        ),
-      ),
-    );
-  }
-}
-
-class ContainerBlur extends StatelessWidget {
-  final Widget child;
-  const ContainerBlur({
-    super.key,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(40),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          width: 300,
-          height: 480,
-          decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(40)),
-          child: child,
-        ),
-      ),
-    );
-  }
-}
-
-class Background extends StatelessWidget {
-  const Background({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: <Color>[
-        Color(0xff740f80),
-        Color(0xFFBD11DF),
-        Color(0xFFEB6AFF)
-      ], begin: Alignment.topRight, end: Alignment.bottomLeft)),
-    );
-  }
-}
-
-class ContainerBackground extends StatelessWidget {
-  const ContainerBackground({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 250,
-      width: 250,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(colors: <Color>[
-          Color(0xFFF90909),
-          Color(0xFFFF5B5B),
-          Color(0xFFFFDEDE)
-        ], begin: Alignment.topRight, end: Alignment.bottomLeft),
-        borderRadius: BorderRadius.circular(50),
-      ),
-    );
   }
 }

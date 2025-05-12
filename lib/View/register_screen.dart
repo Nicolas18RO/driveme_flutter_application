@@ -1,10 +1,10 @@
-import 'dart:ui';
-
-import 'package:drive_me_application_v02/Componets/ImageLoginOption.dart';
+import 'package:drive_me_application_v02/Componets/imageLoginOption.dart';
 import 'package:drive_me_application_v02/Componets/MyButton.dart';
 import 'package:drive_me_application_v02/Componets/MyTextField.dart';
-import 'package:drive_me_application_v02/Componets/Text_Continua_Con.dart';
+import 'package:drive_me_application_v02/Componets/myTextField_Password.dart';
 import 'package:drive_me_application_v02/Services/auth_service.dart';
+import 'package:drive_me_application_v02/Style/background_style.dart';
+import 'package:drive_me_application_v02/View/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -39,8 +39,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   //Metodo Registrar ususario de Sesion
-  void registrarSesion() async {
-    //Mostrar un circulo de carga mientras se inisia la sesion
+  Future<void> registrarSesion() async {
+    // Mostrar un círculo de carga mientras se inicia la sesión
     showDialog(
         context: context,
         builder: (context) {
@@ -49,22 +49,72 @@ class _RegisterScreenState extends State<RegisterScreen> {
           );
         });
 
-    //Intento de crear usuario de sesion
     try {
-      //Confirmar si la contraseña está confirmada
+      // Confirmar si la contraseña está confirmada
       if (passwordController.text == confirmPasswordController.text) {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-            email: emailController.text, password: passwordController.text);
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+                email: emailController.text.trim(),
+                password: passwordController.text.trim());
+
+        // Obtener el usuario actual
+        User? user = userCredential.user;
+
+        if (user != null && !user.emailVerified) {
+          await user.sendEmailVerification();
+
+          // Cerrar el círculo de carga
+          Navigator.pop(context);
+
+          // Mostrar mensaje de verificación y esperar a que el usuario lo cierre
+          await showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                backgroundColor: const Color.fromARGB(255, 198, 178, 233),
+                title: const Text(
+                  'Verificación de correo',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                content: Text(
+                  'Se ha enviado un correo de verificación a: ${user.email}',
+                  style: const TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context); // Cerrar el diálogo
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LoginScreen(onTap: () {}),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'OK',
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        }
       } else {
-        //Mostrar mensaje de Error
-        mostrarMensajeError("¡Las contraseñas no Coinciden!");
+        // Cerrar el círculo de carga
+        Navigator.pop(context);
+        // Mostrar mensaje de error
+        mostrarMensajeError("¡Las contraseñas no coinciden!");
       }
-      //Finalizacion de ciruculo de carga
-      Navigator.pop(context);
     } on FirebaseAuthException catch (e) {
-      //Finalizacion de ciruculo de carga
+      // Cerrar el círculo de carga
       Navigator.pop(context);
-      //Mostrar mensaje de Error
+      // Mostrar mensaje de error
       mostrarMensajeError(e.code);
     }
   }
@@ -117,18 +167,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               hintText: 'e-mail'),
 
                           //TextFiel Passsword
-                          MyTextField(
+                          MyTextFielPassword(
                               controller: passwordController,
-                              obscureText: true,
                               hintText: 'Enter your password'),
 
                           //TextFiel Confirm Password
-                          MyTextField(
+                          MyTextFielPassword(
                               controller: confirmPasswordController,
-                              obscureText: true,
                               hintText: 'Confirm your password'),
 
-                          //Button Login
+                          //Button Register
                           const SizedBox(height: 10),
                           MyButton(
                               onTap: () => registrarSesion(), text: 'Register'),
@@ -177,91 +225,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class Background extends StatelessWidget {
-  const Background({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: <Color>[
-        Color(0xff740f80),
-        Color(0xFFBD11DF),
-        Color(0xFFEB6AFF)
-      ], begin: Alignment.topRight, end: Alignment.bottomLeft)),
-    );
-  }
-}
-
-//--------------------------- WIDGETS ------------------------------------------
-class ContainerBackground extends StatelessWidget {
-  const ContainerBackground({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 250,
-      width: 250,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(colors: <Color>[
-          Color(0xFFF90909),
-          Color(0xFFFF5B5B),
-          Color(0xFFFFDEDE)
-        ], begin: Alignment.topRight, end: Alignment.bottomLeft),
-        borderRadius: BorderRadius.circular(50),
-      ),
-    );
-  }
-}
-
-class Logo extends StatelessWidget {
-  const Logo({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return const SafeArea(
-      child: CircleAvatar(
-        minRadius: 70,
-        backgroundImage: AssetImage(
-          'lib/Images/LogoDM.png',
-        ),
-      ),
-    );
-  }
-}
-
-class ContainerBlur extends StatelessWidget {
-  final Widget child;
-  const ContainerBlur({
-    super.key,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(40),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
-          width: 300,
-          height: 480,
-          decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(40)),
-          child: child,
-        ),
       ),
     );
   }
