@@ -3,8 +3,8 @@ import 'package:drive_me_application_v02/Componets/MyButton.dart';
 import 'package:drive_me_application_v02/Componets/MyTextField.dart';
 import 'package:drive_me_application_v02/Componets/myTextField_Password.dart';
 import 'package:drive_me_application_v02/Services/auth_service.dart';
-import 'package:drive_me_application_v02/Style/background_style.dart';
-import 'package:drive_me_application_v02/View/login_screen.dart';
+import 'package:drive_me_application_v02/Login%20Module/Style/background_style.dart';
+import 'package:drive_me_application_v02/Login%20Module/View/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -146,6 +146,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                   //ContainerBlur
                   ContainerBlur(
+                    heigthContainerBlur: 480,
+                    widthContainerBlur: 300,
                     child: SingleChildScrollView(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

@@ -1,5 +1,5 @@
-import 'package:drive_me_application_v02/View/login_screen.dart';
-import 'package:drive_me_application_v02/View/register_screen.dart';
+import 'package:drive_me_application_v02/Login%20Module/View/login_screen.dart';
+import 'package:drive_me_application_v02/Login%20Module/View/register_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoginOrRegisterPage extends StatefulWidget {

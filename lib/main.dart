@@ -1,4 +1,4 @@
-import 'package:drive_me_application_v02/View/auth_screen.dart';
+import 'package:drive_me_application_v02/Login%20Module/View/auth_screen.dart';
 import 'package:drive_me_application_v02/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';

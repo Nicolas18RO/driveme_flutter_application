@@ -3,9 +3,9 @@ import 'package:drive_me_application_v02/Componets/imageLoginOption.dart';
 import 'package:drive_me_application_v02/Componets/MyButton.dart';
 import 'package:drive_me_application_v02/Componets/MyTextField.dart';
 import 'package:drive_me_application_v02/Componets/myTextField_Password.dart';
+import 'package:drive_me_application_v02/User%20Module/View/Role_Selection_Screen.dart';
 import 'package:drive_me_application_v02/Services/auth_service.dart';
-import 'package:drive_me_application_v02/Style/background_style.dart';
-import 'package:drive_me_application_v02/View/home_screen.dart';
+import 'package:drive_me_application_v02/Login%20Module/Style/background_style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -104,8 +104,10 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pop(context);
 
         // Redireccionar a HomePage si el correo está verificado
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const HomeScreen()));
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const RoleSelectionScreen()));
       }
     } on FirebaseAuthException catch (e) {
       // Finalización del círculo de carga
@@ -165,6 +167,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 //ContainerBlur
                 ContainerBlur(
+                  heigthContainerBlur: 480,
+                  widthContainerBlur: 300,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

@@ -53,10 +53,14 @@ class Text_Continua_Con extends StatelessWidget {
 }
 
 class ContainerBlur extends StatelessWidget {
+  final double widthContainerBlur;
+  final double heigthContainerBlur;
   final Widget child;
   const ContainerBlur({
     super.key,
     required this.child,
+    required this.widthContainerBlur,
+    required this.heigthContainerBlur,
   });
 
   @override
@@ -66,8 +70,8 @@ class ContainerBlur extends StatelessWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          width: 300,
-          height: 480,
+          width: widthContainerBlur, //300
+          height: heigthContainerBlur, //480
           decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
               borderRadius: BorderRadius.circular(40)),
