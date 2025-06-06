@@ -21,7 +21,7 @@ class MyTextFieldDate extends StatelessWidget {
       child: TextField(
         controller: controller,
         obscureText: obscureText,
-        readOnly: isDate, // 👈 Prevent keyboard for date field
+        readOnly: isDate,
         style: const TextStyle(color: Color(0xfff7e6ff)),
         decoration: InputDecoration(
           hintText: hintText,

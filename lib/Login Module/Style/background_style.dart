@@ -56,6 +56,7 @@ class ContainerBlur extends StatelessWidget {
   final double widthContainerBlur;
   final double heigthContainerBlur;
   final Widget child;
+
   const ContainerBlur({
     super.key,
     required this.child,
@@ -69,13 +70,16 @@ class ContainerBlur extends StatelessWidget {
       borderRadius: BorderRadius.circular(40),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Container(
+        child: SizedBox(
           width: widthContainerBlur, //300
           height: heigthContainerBlur, //480
-          decoration: BoxDecoration(
+          child: DecoratedBox(
+            decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(40)),
-          child: child,
+              borderRadius: BorderRadius.circular(40),
+            ),
+            child: child,
+          ),
         ),
       ),
     );
@@ -89,13 +93,16 @@ class Background extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
+    return const SizedBox.expand(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
           gradient: LinearGradient(colors: <Color>[
-        Color(0xff740f80),
-        Color(0xFFBD11DF),
-        Color(0xFFEB6AFF)
-      ], begin: Alignment.topRight, end: Alignment.bottomLeft)),
+            Color(0xff740f80),
+            Color(0xFFBD11DF),
+            Color(0xFFEB6AFF),
+          ], begin: Alignment.topRight, end: Alignment.bottomLeft),
+        ),
+      ),
     );
   }
 }
@@ -107,16 +114,18 @@ class ContainerBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 250,
       width: 250,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(colors: <Color>[
-          Color(0xFFF90909),
-          Color(0xFFFF5B5B),
-          Color(0xFFFFDEDE)
-        ], begin: Alignment.topRight, end: Alignment.bottomLeft),
-        borderRadius: BorderRadius.circular(50),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(colors: <Color>[
+            Color(0xFFF90909),
+            Color(0xFFFF5B5B),
+            Color(0xFFFFDEDE)
+          ], begin: Alignment.topRight, end: Alignment.bottomLeft),
+          borderRadius: BorderRadius.circular(50),
+        ),
       ),
     );
   }
