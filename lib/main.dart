@@ -1,3 +1,4 @@
+import 'package:drive_me_application_v02/Home%20Module/Screen/home_screen.dart';
 import 'package:drive_me_application_v02/Login%20Module/View/auth_screen.dart';
 import 'package:drive_me_application_v02/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-        debugShowCheckedModeBanner: false, home: AuthScreen());
+        debugShowCheckedModeBanner: false, home: HomeScreen() //AuthScreen()
+        );
   }
 }
